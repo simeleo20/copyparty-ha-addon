@@ -46,11 +46,12 @@ jobs:
         # Questo step esegue direttamente il container del builder di Home Assistant
         # per aggiornare il manifest multi-architettura sul GHCR.
         run: |
-          # Questo è il comando corretto e minimale richiesto dallo script /usr/bin/builder.sh
+          # Questa è la forma corretta e minimale dello script interno builder.sh,
+          # che accetta solo argomenti posizionali.
           docker run --rm \
             -v ${{ github.workspace }}:/data \
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             ghcr.io/home-assistant/amd64-builder:latest \
-            --target ghcr.io/simeleo20/copyparty-ha-addon \
-            --addon /data/copyparty
+            ghcr.io/simeleo20/copyparty-ha-addon \
+            /data/copyparty
         shell: bash
