@@ -13,4 +13,4 @@ RUN ln -sf /share /w
 # L'ENTRYPOINT originale verrà sovrascritto dal nostro script 'run'
 
 # Imposta il comando di avvio come lo script 'run' (già fatto nel 'run')
-CMD ["/usr/bin/run"]
+ENTRYPOINT ["/usr/bin/run"]
