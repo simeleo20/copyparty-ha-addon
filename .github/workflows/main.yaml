@@ -42,16 +42,24 @@ jobs:
             ghcr.io/simeleo20/copyparty-ha-addon:latest
             ghcr.io/simeleo20/copyparty-ha-addon:${{ github.ref_name }}
 
-      - name: ⚙️ Update Manifest (Manual Builder Call)
-        # Questo step esegue direttamente il container del builder di Home Assistant
-        # per aggiornare il manifest multi-architettura sul GHCR.
+      - name: 🌐 Create Multi-Architecture Manifest
+        id: create_manifest
         run: |
-          # 1. Mappa la directory 'copyparty' (dove si trova config.json) su /data.
-          # 2. Imposta la working directory (-w) su /data.
-          # 3. Esegue l'immagine del builder senza argomenti (si aspetta di trovare config.json in ./)
-          docker run --rm \
-            -v ${{ github.workspace }}/copyparty:/data \
-            -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-            -w /data \
-            ghcr.io/home-assistant/amd64-builder:latest
+          # Definisce il nome base dell'immagine
+          IMAGE_NAME="ghcr.io/simeleo20/copyparty-ha-addon"
+          
+          # Definisce i tag da raggruppare
+          TAGS="${IMAGE_NAME}:latest ${IMAGE_NAME}:${{ github.ref_name }}"
+          
+          # Definisce le immagini specifiche per architettura caricate prima
+          IMAGES_TO_GROUP="\
+          ${IMAGE_NAME}:latest-amd64 \
+          ${IMAGE_NAME}:latest-armv7 \
+          ${IMAGE_NAME}:latest-arm64"
+          
+          # 1. Crea e annota il manifest list (richiede BuildX)
+          docker manifest create ${TAGS} ${IMAGES_TO_GROUP}
+          
+          # 2. Spinge il manifest list sul GHCR
+          docker manifest push ${TAGS}
         shell: bash
