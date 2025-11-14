@@ -52,7 +52,7 @@ jobs:
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             ghcr.io/home-assistant/amd64-builder:latest \
             --target ghcr.io/simeleo20/copyparty-ha-addon \
-            --target_config /data/copyparty/config.json \
+            --target_config_path /data/copyparty \
             --target_repo https://github.com/${{ github.repository }} \
             --target_tag ${{ github.ref_name }}
         shell: bash
