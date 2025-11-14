@@ -24,11 +24,11 @@
         "SHARED_FOLDER_NAME": "str"
     },
     "map": [
-        "config:rw",    
-        "share:rw",     
-        "media:rw",   
-        "ssl:rw",     
-        "addons:rw",  
+        "config:rw", 
+        "share:rw",  
+        "media:rw",  
+        "ssl:rw",    
+        "addons:rw", 
         "backup:rw"
     ]
 }
