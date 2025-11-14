@@ -47,6 +47,7 @@ jobs:
         with:
           args: |
             --target ghcr.io/simeleo20/copyparty-ha-addon
-            --target_config ./copyparty/config.json
+            --target_config copyparty/config.json
+            --target_config_path ./copyparty
             --target_repo https://github.com/${{ github.repository }}
             --target_tag ${{ github.ref_name }}
