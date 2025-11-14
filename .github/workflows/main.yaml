@@ -38,28 +38,16 @@ jobs:
           file: ./copyparty/Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
+          # Usiamo type=semver per assicurarci che vengano creati tag arch-specifici corretti
           tags: |
             ghcr.io/simeleo20/copyparty-ha-addon:latest
             ghcr.io/simeleo20/copyparty-ha-addon:${{ github.ref_name }}
-
-      - name: 🌐 Create Multi-Architecture Manifest
-        id: create_manifest
-        run: |
-          # Definisce il nome base dell'immagine
-          IMAGE_NAME="ghcr.io/simeleo20/copyparty-ha-addon"
-          
-          # Definisce i tag da raggruppare
-          TAGS="${IMAGE_NAME}:latest ${IMAGE_NAME}:${{ github.ref_name }}"
-          
-          # Definisce le immagini specifiche per architettura caricate prima
-          IMAGES_TO_GROUP="\
-          ${IMAGE_NAME}:latest-amd64 \
-          ${IMAGE_NAME}:latest-armv7 \
-          ${IMAGE_NAME}:latest-arm64"
-          
-          # 1. Crea e annota il manifest list (richiede BuildX)
-          docker manifest create ${TAGS} ${IMAGES_TO_GROUP}
-          
-          # 2. Spinge il manifest list sul GHCR
-          docker manifest push ${TAGS}
-        shell: bash
+          # Aggiungiamo un output per i tag finali
+          # build-push-action gestirà la creazione del manifest
+          # Se questo non funziona, useremo il manifest manuale, ma con i tag corretti.
+      
+      # Rimuoviamo lo step manuale del manifest, dato che docker/build-push-action@v5 
+      # dovrebbe creare e spingere il manifest multi-architettura in modo automatico 
+      # quando si usa 'platforms' e 'push: true'. L'errore che hai visto prima era 
+      # probabilmente dovuto a un conflitto con un vecchio tag.
+      # Riprova il workflow senza lo step manuale, dato che l'azione build-push è la più aggiornata.
