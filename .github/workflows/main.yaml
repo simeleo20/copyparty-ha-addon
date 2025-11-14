@@ -47,12 +47,13 @@ jobs:
         # per aggiornare il manifest multi-architettura sul GHCR.
         run: |
           # Utilizza direttamente l'immagine del builder (Docker la tirerà giù se non è in cache).
+          # Usiamo --addon per specificare la directory che contiene config.json
           docker run --rm \
             -v ${{ github.workspace }}:/data \
             -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
             ghcr.io/home-assistant/amd64-builder:latest \
             --target ghcr.io/simeleo20/copyparty-ha-addon \
-            --target_config_path /data/copyparty \
             --target_repo https://github.com/${{ github.repository }} \
-            --target_tag ${{ github.ref_name }}
+            --target_tag ${{ github.ref_name }} \
+            --addon /data/copyparty 
         shell: bash
