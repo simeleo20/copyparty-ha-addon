@@ -1,0 +1,34 @@
+{
+    "name": "CopyParty File Server",
+    "version": "0.1.0",
+    "slug": "copyparty",
+    "description": "Portable file server with WebDAV, FTP, and media indexing (via copyparty/ac Docker image).",
+    "arch": [
+        "aarch64",
+        "amd64",
+        "armv7"
+    ],
+    "image": "copyparty/ac", 
+    "url": "https://github.com/simeleo20/copyparty-ha-addon",
+    "startup": "application",
+    "ports": {
+        "3923/tcp": 3923 
+    },
+    "ports_description": {
+        "3923/tcp": "CopyParty Web Interface (Default Port)"
+    },
+    "options": {
+        "SHARED_FOLDER_NAME": "copyparty_files"
+    },
+    "schema": {
+        "SHARED_FOLDER_NAME": "str"
+    },
+    "map": [
+        "config:rw",    
+        "share:rw",     
+        "media:rw",   
+        "ssl:rw",     
+        "addons:rw",  
+        "backup:rw"
+    ]
+}

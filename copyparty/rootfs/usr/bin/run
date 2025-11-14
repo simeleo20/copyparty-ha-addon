@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -e
+
+# --- 1. CONFIGURAZIONE E SETUP ---
+
+# Legge la configurazione dall'Add-on (usata per l'esempio precedente, ma mantenuta per coerenza)
+SHARED_FOLDER_NAME=$(jq --raw-output ".SHARED_FOLDER_NAME" /data/options.json)
+
+# Il percorso all'interno della cartella /share di Home Assistant (usato solo per creazione)
+HA_SHARE_PATH="/share/${SHARED_FOLDER_NAME}"
+
+echo "Ensuring user-defined shared directory exists at: ${HA_SHARE_PATH}"
+mkdir -p "${HA_SHARE_PATH}"
+
+# --- 2. DEFINIZIONE DELLE CARTELLE DA CONDIVIDERE ---
+
+# Definisce i percorsi del filesystem di Home Assistant da condividere 
+# e il nome che avranno nell'interfaccia web di CopyParty.
+# ASSUNZIONE: Questi percorsi sono stati mappati nel file config.json tramite la chiave "map".
+SHARE_PATHS=(
+    "/config::HA_Config"        # /config (File di configurazione, log)
+    "/share::HA_Shared"         # /share (Cartella di condivisione generale)
+    "/media::HA_Media"          # /media (Media files)
+    "/ssl::HA_SSL_Certs"        # /ssl (Certificati SSL e chiavi private)
+    "/addons::HA_Addon_Data"    # /addons (Dati di altri Add-on)
+    "/backup::HA_Backups"       # /backup (Backup completi/Snapshots)
+)
+
+# --- 3. COSTRUZIONE DEGLI ARGOMENTI DI COPYPARTY ---
+
+echo "Starting CopyParty on port 3923, sharing multiple paths..."
+
+COPYPARTY_ARGS=""
+
+# Iterazione sulla lista per costruire la stringa di argomenti
+for path_map in "${SHARE_PATHS[@]}"; do
+    COPYPARTY_ARGS="${COPYPARTY_ARGS} ${path_map}"
+done
+
+# --- 4. AVVIO DI COPYPARTY ---
+
+# Avvia CopyParty.
+# --addr 0.0.0.0: Ascolta su tutte le interfacce
+# --port 3923: Utilizza la porta standard di CopyParty (e quella esposta in config.json)
+# ${COPYPARTY_ARGS}: Aggiunge tutti i percorsi che abbiamo definito sopra.
+python3 -m copyparty --addr 0.0.0.0 --port 3923 ${COPYPARTY_ARGS}
