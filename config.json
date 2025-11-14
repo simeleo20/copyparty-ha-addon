@@ -8,7 +8,7 @@
         "amd64",
         "armv7"
     ],
-    "image": "copyparty/ac", 
+    "image": "ghcr.io/simeleo20/copyparty-ha-addon-{arch}", 
     "url": "https://github.com/simeleo20/copyparty-ha-addon",
     "startup": "application",
     "ports": {
