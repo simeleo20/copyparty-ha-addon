@@ -4,6 +4,10 @@ FROM copyparty/ac:latest
 # Copia lo script di avvio
 COPY rootfs/ /
 
+# !!! CORREZIONE CRUCIALE: Aggiunge i permessi di esecuzione allo script di avvio. !!!
+# Questo risolve l'errore "Permission denied"
+RUN chmod +x /usr/bin/run
+
 # Aggiungi un layer per creare il link simbolico prima dell'esecuzione
 # (Questo può essere fatto anche nello script 'run', ma è più pulito qui)
 # Questo fa in modo che il percorso di lavoro predefinito (/w) punti al punto
