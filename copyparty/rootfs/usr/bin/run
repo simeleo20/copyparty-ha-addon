@@ -10,21 +10,11 @@ HA_SHARE_PATH="/share/${SHARED_FOLDER_NAME}"
 echo "Ensuring user-defined shared directory exists at: ${HA_SHARE_PATH}"
 mkdir -p "${HA_SHARE_PATH}"
 
-# --- 2. AVVIO DI COPYPARTY (SOLUZIONE AL PROBLEMA DI ARGOMENTI) ---
+# --- 2. AVVIO DI COPYPARTY (SOLUZIONE FINALE AL PROBLEMA DI ARGOMENTI) ---
 
 echo "Starting CopyParty on port 3923, sharing multiple paths..."
 
-# !!! SOLUZIONE CHIAVE: ELIMINIAMO LA VARIABILE INTERMEDIA E PASSIAMO GLI ARGOMENTI DIRETTAMENTE !!!
-#
-# Poiché sh/BusyBox non gestisce bene l'espansione di lunghe variabili stringa con spazi 
-# (come faceva COPYPARTY_ARGS), lanciamo il comando con tutti i percorsi 
-# elencati, sfruttando il fatto che 'exec' li passerà come argomenti separati.
-exec python3 -m copyparty \
-  --addr 0.0.0.0 \
-  --port 3923 \
-  "/config::HA_Config" \
-  "/share::HA_Shared" \
-  "/media::HA_Media" \
-  "/ssl::HA_SSL_Certs" \
-  "/addons::HA_Addon_Data" \
-  "/backup::HA_Backups"
+# !!! SOLUZIONE CHIAVE: Lanciare l'intero comando su UNA SOLA RIGA. !!!
+# Questo risolve il problema delle continuazioni di riga (\) in BusyBox/sh 
+# che causava la fusione di tutti gli argomenti.
+exec python3 -m copyparty --addr 0.0.0.0 --port 3923 "/config::HA_Config" "/share::HA_Shared" "/media::HA_Media" "/ssl::HA_SSL_Certs" "/addons::HA_Addon_Data" "/backup::HA_Backups"

@@ -1,6 +1,6 @@
 {
     "name": "CopyParty File Server",
-    "version": "0.1.28",
+    "version": "0.1.29",
     "slug": "copyparty",
     "description": "Portable file server with WebDAV, FTP, and media indexing (via copyparty/ac Docker image).",
     "arch": [
