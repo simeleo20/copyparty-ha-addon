@@ -4,17 +4,19 @@ FROM copyparty/ac:latest
 # Copia lo script di avvio
 COPY rootfs/ /
 
-# !!! CORREZIONE CRUCIALE: Aggiunge i permessi di esecuzione allo script di avvio. !!!
-# Questo risolve l'errore "Permission denied"
+# !!! NUOVA CORREZIONE: Installa 'jq' (necessario per leggere config.json)
+RUN apk add --no-cache jq
+
+# Correzione Permessi: Aggiunge i permessi di esecuzione allo script di avvio.
 RUN chmod +x /usr/bin/run
 
 # Aggiungi un layer per creare il link simbolico prima dell'esecuzione
-# (Questo può essere fatto anche nello script 'run', ma è più pulito qui)
 # Questo fa in modo che il percorso di lavoro predefinito (/w) punti al punto
 # dove il Supervisore di HA mappa i tuoi file (/share)
 RUN ln -sf /share /w
 
-# L'ENTRYPOINT originale verrà sovrascritto dal nostro script 'run'
-
-# Imposta il comando di avvio come lo script 'run' (già fatto nel 'run')
+# L'ENTRYPOINT DEVE essere il nostro script 'run', 
+# in modo che venga eseguito come processo principale.
 ENTRYPOINT ["/usr/bin/run"]
+
+# Non è necessario un CMD esplicito.
